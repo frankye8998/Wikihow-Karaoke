@@ -10,21 +10,16 @@ counter = 0
 onlyfiles = [f for f in listdir('pics') if isfile(join('pics', f))]
 shuffle(onlyfiles)
 
-class MyHandler(BaseHTTPRequestHandler):
-    def handle_http(self, status_code, path):
-        self.send_response(status_code)
-        self.send_header('Content-type', 'application/json')
-        self.end_headers()
-        content = '{"status": "GET"}'
-        return bytes(content, 'UTF-8')
 
+class MyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global counter
         self.send_response(200)
         if counter == len(onlyfiles):
             self.send_header('Content-type', 'text/html')
-            HTML = b'''<html><head></head><body><h3 style="text-align: center">Error: No more images!</h3></body></html>'''
-            self.wfile.write(HTML)
+            with open('./html/no-images.html', 'rb') as f:
+                html = f.read()
+            self.wfile.write(html)
         else:
             self.send_header('Content-type', 'image/jpeg')
             self.end_headers()
