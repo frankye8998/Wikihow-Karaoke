@@ -23,7 +23,7 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         if counter == len(onlyfiles):
             self.send_header('Content-type', 'text/html')
-            HTML = b'''<html><body><h3 style="text-align: center">Error: No more images!</h3></body></html'''
+            HTML = b'''<html><head></head><body><h3 style="text-align: center">Error: No more images!</h3></body></html>'''
             self.wfile.write(HTML)
         else:
             self.send_header('Content-type', 'image/jpeg')
@@ -31,7 +31,6 @@ class MyHandler(BaseHTTPRequestHandler):
             with open(f'./pics/{onlyfiles[counter]}', 'rb') as f:
                 self.wfile.write(f.read())
             counter += 1
-            print(counter)
 
 if __name__ == '__main__':
     server_class = HTTPServer
@@ -41,7 +40,5 @@ if __name__ == '__main__':
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
-    except StopIteration:
-        print("Ran out of images!")
     httpd.server_close()
     print(time.asctime(), 'Server Stops - %s:%s' % (HOST_NAME, PORT_NUMBER))
