@@ -19,17 +19,22 @@ class MyHandler(BaseHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
         self.send_header('Pragma', 'no-cache')
         self.send_header('Expires', '0')
-        if counter == len(onlyfiles):
-            self.send_header('Content-type', 'text/html')
-            with open('./html/no-images.html', 'rb') as f:
-                html = f.read()
-            self.wfile.write(html)
-        else:
+        if self.path == '/img' and counter < len(onlyfiles):
             self.send_header('Content-type', 'image/jpeg')
             self.end_headers()
             with open(f'./pics/{onlyfiles[counter]}', 'rb') as f:
                 self.wfile.write(f.read())
             counter += 1
+        else:
+            self.send_header('Content-type', 'text/html')
+            if counter >= len(onlyfiles):
+                fname = './html/no-images.html'
+            else:
+                fname = './html/images.html'
+            with open(fname, 'rb') as f:
+                html = f.read()
+            self.wfile.write(html)
+
 
 if __name__ == '__main__':
     server_class = HTTPServer
